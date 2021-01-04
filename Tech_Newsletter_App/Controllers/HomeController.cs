@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Web.Mvc;
-using Tech_Newsletter_App.Models;
 using Tech_Newsletter_App.ViewModels;
 
 namespace Tech_Newsletter_App.Controllers
@@ -57,51 +55,70 @@ namespace Tech_Newsletter_App.Controllers
         }
 
         public ActionResult Admin()
-        {
+        {//NOTE: BELOW IS THE ADO.NET SYNTAX ORIGINALLY USED ; NOW REPLACED BY ENTITY FRAMEWORK SYNTAX (but left the ADO.NET code for learning purposes):END NOTE
             /*going to use ADO.NET to get all the signups off the database to display for the Admin */
-            string queryString = @"SELECT Id, FirstName, LastName, EmailAddress, SocialSecurityNumber FROM SignUps";
-            List<SignUp> signups = new List<SignUp>();/*creating a List of type SignUp and namining the new list "signups"; each item in the list will be referred to as a "signup"*/
+            //string queryString = @"SELECT Id, FirstName, LastName, EmailAddress, SocialSecurityNumber FROM SignUps";
+            //List<SignUp> signups = new List<SignUp>();/*creating a List of type SignUp and namining the new list "signups"; each item in the list will be referred to as a "signup"*/
 
-            using (SqlConnection connection = new SqlConnection(connectionString))/*using the sql connection string to get into the database*/
+            //using (SqlConnection connection = new SqlConnection(connectionString))/*using the sql connection string to get into the database*/
+            //{
+            //    SqlCommand command = new SqlCommand(queryString, connection);/*passing the queryString (the instructions for the database request) and the connection string info to get SignUps Table information to display for the Admin off of the database*/
+
+            //    connection.Open();
+
+            //    SqlDataReader reader = command.ExecuteReader();/*read the data in the table*/
+
+            //    while (reader.Read())
+            //    {
+            //        /*here we mapped the data from the SignUp table in the database to the signups list we are creating*/
+            //        var signup = new SignUp();/*make a new object called "signup* of type "SignUp"(this is our model class "SignUp") made up of the information that we are reading from the database*/
+            //        signup.Id = Convert.ToInt32(reader["Id"]);/*we have to convert the information gathered off the database to a format that c sharp can understand*/
+
+            //        signup.FirstName = reader["FirstName"].ToString();
+            //        signup.LastName = reader["LastName"].ToString();
+            //        signup.EmailAddress = reader["EmailAddress"].ToString();
+            //        signup.SocialSecurityNumber = reader["SocialSecurityNumber"].ToString();
+
+            //        signups.Add(signup);/*we are adding this new information(signup.FirstName, signup.LastName, etc....) to our new "signups" list*/
+
+            //    }
+            //}
+
+            //ENTITY FRAMEWORK SYNTAX STARTS HERE:
+
+            using (NewsletterEntities db = new NewsletterEntities())//using entity syntax to instanciate the NewsletterEntities object that gives us access to the database through the Entity Framework
             {
-                SqlCommand command = new SqlCommand(queryString, connection);/*passing the queryString (the instructions for the database request) and the connection string info to get SignUps Table information to display for the Admin off of the database*/
+                var signups = db.SignUps; // created the variable "signups"; which is equal to db.SignUps(which is the DbSet of the SignUps Table in the database;
+                                          //and therefore, giving us access to all of the records in the database table)
+                                          //NOTE: See comments in Newsletter.Context.cs for further explaination of DbSet
 
-                connection.Open();
 
-                SqlDataReader reader = command.ExecuteReader();/*read the data in the table*/
+                //NOTE:This part of the code was used in the ADO.NET Syntax (as is), as well as here in the Entity Framework Syntax(from this line all the way down to the return view line of code)
 
-                while (reader.Read())
+
+                var signupVms = new List<SignUpVm>();//create a new list of view models
+
+                foreach (var signup in signups)//here we are mapping the values from the signup model(signup) to the signup view model(signupVm)
                 {
-                    /*here we mapped the data from the SignUp table in the database to the signups list we are creating*/
-                    var signup = new SignUp();/*make a new object called "signup* of type "SignUp"(this is our model class "SignUp") made up of the information that we are reading from the database*/
-                    signup.Id = Convert.ToInt32(reader["Id"]);/*we have to convert the information gathered off the database to a format that c sharp can understand*/
+                    var signupVm = new SignUpVm();
+                    /*here we map our properties from the signups list we created to the signupVm list we created to display to the ViewModel*/
+                    /*we are using the ViewModel to display the info to the Admin User so that we can explicitly choose what data to show */
+                    /* (for example: if you were needing to protect against exposure of private info (ie. social security numbers, */
+                    /*credit card info., birth date, medical diagnosis, account balance, etc.) that maybe contained in the data transferred fromm the database*/
 
-                    signup.FirstName = reader["FirstName"].ToString();
-                    signup.LastName = reader["LastName"].ToString();
-                    signup.EmailAddress = reader["EmailAddress"].ToString();
-                    signup.SocialSecurityNumber = reader["SocialSecurityNumber"].ToString();
+                    signupVm.FirstName = signup.FirstName;
+                    signupVm.LastName = signup.LastName;
+                    signupVm.EmailAddress = signup.EmailAddress;
 
-                    signups.Add(signup);/*we are adding this new information(signup.FirstName, signup.LastName, etc....) to our new "signups" list*/
-
+                    signupVms.Add(signupVm);//then adding the newly mapped values to the view model list
                 }
+                return View(signupVms);//then passing this all to the View Model View!!!! Ta-Da!!!Thank you...thank you very much!!!! You're too kind...thank you.
             }
-            List<SignUpVm> signupVms = new List<SignUpVm>();
-            foreach (var signup in signups)
-            {
-                var signupVm = new SignUpVm();
 
-                /*here we map our properties from the signups list we created to the signupVm list we created to display to the ViewModel*/
-                /*we are using the ViewModel to display the info to the Admin User so that we can explicitly choose what data to show */
-                /* (for example: if you were needing to protect against exposure of private info (ie. social security numbers, */
-                /*credit card info., birth date, medical diagnosis, account balance, etc.) that maybe contained in the data transferred fromm the database*/
 
-                signupVm.FirstName = signup.FirstName;
-                signupVm.LastName = signup.LastName;
-                signupVm.EmailAddress = signup.EmailAddress;
 
-                signupVms.Add(signupVm);
-            }
-            return View(signupVms);
+
+
 
         }
     }
