@@ -1,0 +1,36 @@
+﻿@using Tech_Newsletter_App.ViewModels <!-- for this to work you have to add te namespace of whatever it is trhat you will be needing to -->                                    <!--view ... such as the ViewMaodel namespace or the View namespace and then also add the (atmodel)--> p                                  <!-- plus whatever data type you will be passing/utilizing if necessary (ie. The List) -->
+@model List<SignUpVm>
+
+
+
+<h2>Admin</h2>
+<div class="row no-gutters m-3">
+  <div class="card col-sm-12 col-md-10 col-lg-6 mx-auto shadow">
+    <div class="card-header text-center">
+      <h5 class="m-0">Sign-Ups</h5>
+    </div>
+    <div class="card-body">
+      @foreach (var signupVm in Model) /*here we are using razor syntax to inplement c# to perform a loop to display one row for each signup on our table in the database for the admin to look at */
+      {
+        <div class="row">
+          <div class="col">
+            @signupVm.FirstName
+          </div>
+          <div class="col">
+            @signupVm.LastName
+          </div>
+          <div class="col">
+            @signupVm.EmailAddress
+          </div>
+
+
+        </div>
+
+      }
+    </div>
+  </div>
+
+
+
+</div>
+
