@@ -12,7 +12,7 @@ namespace Tech_Newsletter_App
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
 
-    public partial class NewsletterEntities : DbContext /*partial classes can be defined outside of the file itself, so that it can be re-created or updated for each separate istance*/
+    public partial class NewsletterEntities : DbContext /*partial classes can be(added on to) defined outside of the file itself, so that it can be re-created or updated for each separate istance*/
     /*when this class is instantiated(NewsletterEntities); a XML tag was created in the Web.config file ( at the bottom; <connectionStrings><add  name="NewsletterEntities" connectionString=(connectiuonString here)></ConnectionString>*/
     {
         public NewsletterEntities()/*then this constructor is called, and a connection to the database (which is defined in the Web.Config file under <connectionString> for NewsletterEntities) is created.*/
@@ -32,3 +32,4 @@ namespace Tech_Newsletter_App
                                                           //DbSet is basically a list of all the records in the database
     }
 }
+///this defines our connection to the database!!!!

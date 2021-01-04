@@ -1,4 +1,5 @@
-﻿
+﻿using System.Data;
+using System.Collections.Generic;
 
 namespace Tech_Newsletter_App.ViewModels
 {

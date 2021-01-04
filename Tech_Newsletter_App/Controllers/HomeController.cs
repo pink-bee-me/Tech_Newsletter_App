@@ -94,11 +94,12 @@ namespace Tech_Newsletter_App.Controllers
 
 
                 //NOTE:This part of the code was used in the ADO.NET Syntax (as is), as well as here in the Entity Framework Syntax(from this line all the way down to the return view line of code)
+                //here we are mapping the values from the signup model(signup) to the signup view model(signupVm)
+
+                var SignUpVms = new List<SignUpVm>();//create a new list of view models
 
 
-                var signupVms = new List<SignUpVm>();//create a new list of view models
-
-                foreach (var signup in signups)//here we are mapping the values from the signup model(signup) to the signup view model(signupVm)
+                foreach (var signup in signups)
                 {
                     var signupVm = new SignUpVm();
                     /*here we map our properties from the signups list we created to the signupVm list we created to display to the ViewModel*/
@@ -110,9 +111,9 @@ namespace Tech_Newsletter_App.Controllers
                     signupVm.LastName = signup.LastName;
                     signupVm.EmailAddress = signup.EmailAddress;
 
-                    signupVms.Add(signupVm);//then adding the newly mapped values to the view model list
+                    SignUpVms.Add(signupVm);//then adding the newly mapped values to the view model list
                 }
-                return View(signupVms);//then passing this all to the View Model View!!!! Ta-Da!!!Thank you...thank you very much!!!! You're too kind...thank you.
+                return View(SignUpVms);//then passing this all to the View Model View!!!! Ta-Da!!!Thank you...thank you very much!!!! You're too kind...thank you.
             }
 
 
