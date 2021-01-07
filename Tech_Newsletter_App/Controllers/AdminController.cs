@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Tech_Newsletter_App.Models;
 using Tech_Newsletter_App.ViewModels;
+
 
 namespace Tech_Newsletter_App.Controllers
 {
@@ -44,11 +46,13 @@ namespace Tech_Newsletter_App.Controllers
                 //(Note:Entity Framework serves as a wrapper for condensed ADO.NET code)
 
                 using (NewsletterEntities db = new NewsletterEntities())//using entity syntax to instanciate the NewsletterEntities object that gives us access to the database through the Entity Framework
-                {
-                    var signups = db.SignUps; // created the variable "signups"; which is equal to db.SignUps(which is the DbSet of the SignUps Table in the database;
-                                              //and therefore, giving us access to all of the records in the database table)
-                                              //NOTE: See comments in Newsletter.Context.cs for further explaination of DbSet
-
+                {               //Alternate way to display only the signed up people***the "WHERE" part below is LINQ syntax and we are looking for the signups that the value of removed is null))
+                                // var signups = db.SignUps.Where(x => x.Removed == null).ToList();  // created the variable "signups"; which is equal to db.SignUps(which is the DbSet of the SignUps Table in the database;
+                                //and therefore, giving us access to all of the records in the database table)
+                                //NOTE: See comments in Newsletter.Context.cs for further explaination of DbSet
+                    var signups = (from c in db.SignUps
+                                   where c.Removed == null
+                                   select c).ToList();
 
                     //NOTE:This part of the code was used in the ADO.NET Syntax (as is), as well as here in the Entity Framework Syntax(from this line all the way down to the return view line of code)
                     //here we are mapping the values from the signup model(signup) to the signup view model(signupVm)
@@ -82,6 +86,7 @@ namespace Tech_Newsletter_App.Controllers
         {
             using (NewsletterEntities db = new NewsletterEntities())
             {
+
                 var signup = db.SignUps.Find(Id);
                 signup.Removed = DateTime.Now;
                 db.SaveChanges();
